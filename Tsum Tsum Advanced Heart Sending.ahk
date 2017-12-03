@@ -1,6 +1,6 @@
 ﻿;
 ;   TTAHS - Tsum Tsum Advanced Heart Sending
-;       Version b3.92
+;       Version b3.93
 ;
 ;
 ;
@@ -73,7 +73,7 @@ ExitButton:
 
 Instantiate:
     RoundsText := 0
-    GuiControl,About:,Tool_Version, TTAHS b3.92
+    GuiControl,About:,Tool_Version, TTAHS b3.93
     SetWorkingDir %A_ScriptDir%
     n_Width := 0
     n_Height := 0
@@ -847,16 +847,21 @@ ClaimAll()
         NextPart := False
         if CheckImage("No_Claim_All.png")
         {
-            if not (ClaimStage == 4)
+            failcounter := failcounter + 1
+            if (failcounter = 30)
             {
-                AddLog("No mail to claim!")
-            }
-            else
-            {
-                AddLog("Mail claimed!")
-            }
+                if not (ClaimStage == 4)
+                {
+                    AddLog("No mail to claim!")
+                }
+                else
+                {
+                    AddLog("Mail claimed!")
+                }
 
-            ClaimStage := 5
+                ClaimStage := 5
+                failcounter := 0
+            }
         }
         else
         {
