@@ -914,13 +914,14 @@ ClaimAllInd()
     Global failcounter
 
     NextPart := True
+    static heartsClaimed = 0
 
-    if (ClaimStage == 1)
+    if (ClaimStage == 1) and (NextPart)
     {
+        NextPart := False
+
         if CheckImage("Heart_Part.png", getX, getY)
         {
-            NextPart := False
-
             offX := getX + 196
             offY := getY - 13
             if (Verbose)
@@ -937,7 +938,14 @@ ClaimAllInd()
         {
             failcounter := failcounter + 1
 
-            if failcounter = 30
+            ; if we've claimed at least one heart, no need to wait for 30 more
+            ; failures
+            if (heartsClaimed > 0)
+            {
+              ClaimStage := "Done"
+            }
+
+            if (failcounter = 30)
             {
                 AddLog("No received hearts detected!")
                 ClaimStage := "Done"
@@ -982,6 +990,7 @@ ClaimAllInd()
             Sleep TTCC
             ClickPoint(200,560)
             ClaimStage := 1
+            heartsClaimed++
         }
         else
         {
@@ -1011,6 +1020,9 @@ ClaimAllInd()
         if CheckImage("Close_Mail.png")
         {
             AddLog("Exiting Mail")
+            AddLog(heartsClaimed " hearts claimed.")
+            heartsClaimed = 0  ; ready for next time ...
+
             ClaimStage := "Exit"
         }
     }
