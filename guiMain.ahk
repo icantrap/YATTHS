@@ -3,7 +3,7 @@
 #Include %A_ScriptDir%/kLib.ahk
 
 Main := new kGUI
-Main.Create("MainGUI", 345, 580, "TTAHS")
+Main.Create("MainGUI", 395, 580, "TTAHS")
 
 Menu FileMenu, Add, Settings..., SettButton
 Menu FileMenu, Add
@@ -24,14 +24,14 @@ Main.FieldCount -= 1
 
 bField2 := new SettingField
 bField2.Init(Main)
-bField2.ControlShift := -60
+bField2.ControlShift := -35
 bField2.AddControl("Button", "PButton", " gPauseButton w105 h30", "Pause")
 
 Main.FieldCount -= 1
 
 bField3 := new SettingField
 bField3.Init(Main)
-bField3.ControlShift := 50
+bField3.ControlShift := 100
 bField3.AddControl("Button", "StoButton", "gStopButton w105 h30", "Stop")
 
 Main.FieldCount += 0.5
@@ -43,7 +43,7 @@ rField.AddField("rField", "vRoundsText", "0 Rounds")
 logField := new SettingField
 logField.Init(Main)
 logField.ControlShift := -170
-logField.AddControl("ListView", "Log", "x4 y62 w325 h480", "Log")
+logField.AddControl("ListView", "Log", "x4 y62 w375 h480", "Log")
 
 /*
 Menu FileMenu, Add, Settings..., SettButton
