@@ -538,7 +538,7 @@ RunStep()
 
 DumpLog()
 {
-    Gui Main: Default
+    Gui MainGUI: Default
 
     GuiControl,MainGui:, StatusBar, Writing Log File
 
