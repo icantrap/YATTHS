@@ -1,6 +1,6 @@
 ﻿;
 ;   TTAHS - Tsum Tsum Advanced Heart Sending
-;       Version b3.91
+;       Version b3.92
 ;
 ;
 ;
@@ -73,7 +73,7 @@ ExitButton:
 
 Instantiate:
     RoundsText := 0
-    GuiControl,About:,Tool_Version, TTAHS b3.91
+    GuiControl,About:,Tool_Version, TTAHS b3.92
     SetWorkingDir %A_ScriptDir%
     n_Width := 0
     n_Height := 0
@@ -389,6 +389,7 @@ RunStep()
                     AddLog("Mailbox opened.")
                     AddLog("Beginning claim process...")
                     Round_Part := 3
+                    failcounter := 0
                     ClaimStage := 1
                 }
             }
@@ -456,6 +457,7 @@ RunStep()
                 ;Find and send hearts!
                 ;AddLog("Sending Hearts...")
 
+                failcounter := 0
                 Result := SendHearts()
                 if (Result)
                 {
@@ -691,6 +693,7 @@ SendHeart(x, y)
     Global TTCC
     Global Verbose
     Global SendSubStage
+    Global failcounter
 
     next_sub := true
 
@@ -702,6 +705,7 @@ SendHeart(x, y)
 
         ClickPoint(x, y)
         SendSubStage := 2
+        failcounter := 0
     }
 
     if (SendSubStage == 2) and (next_sub)
@@ -712,6 +716,17 @@ SendHeart(x, y)
             sleep TTCS
             ClickPoint(280,450)
             SendSubStage := 3
+            failcounter := 0
+        }
+        else
+        {
+            failcounter := failcounter + 1
+
+            if (failcounter > 30)
+            {
+                SendSubStage := SendSubStage - 1
+                failcounter := 0
+            }
         }
     }
 
@@ -725,6 +740,16 @@ SendHeart(x, y)
             SendSubStage := 4
 
             return true
+        }
+        else
+        {
+            failcounter := failcounter + 1
+
+            if (failcounter > 30)
+            {
+                SendSubStage := SendSubStage - 1
+                failcounter := 0
+            }
         }
     }
     /*
@@ -770,6 +795,8 @@ ClaimAll()
     Global ClaimStage
     Global TTCS
     Global TTCC
+    Global failcounter
+
     NextPart := true
 
     if (ClaimStage == 1) and (NextPart)
@@ -779,6 +806,7 @@ ClaimAll()
         {
             ClickPoint(280,565)
             ClaimStage := 2
+            failcounter := 0
         }
     }
 
@@ -801,6 +829,16 @@ ClaimAll()
             Sleep TTCC
             ClickPoint(200,560)
             ClaimStage := 4
+        }
+        else
+        {
+            failcounter := failcounter + 1
+
+            if (failcounter > 30)
+            {
+                ClaimStage := ClaimStage - 1
+                failcounter := 0
+            }
         }
     }
 
@@ -868,6 +906,7 @@ ClaimAllInd()
     Global SendtoMail
     Global TTCS
     Global TTCC
+    Global failcounter
 
     NextPart := True
 
@@ -887,11 +926,17 @@ ClaimAllInd()
             Sleep TTCS
             ClickPoint(offX,offY)
             ClaimStage := 2
+            failcounter := 0
         }
         else
         {
-            AddLog("No received hearts detected!")
-            ClaimStage := "Done"
+            failcounter := failcounter + 1
+
+            if failcounter = 30
+            {
+                AddLog("No received hearts detected!")
+                ClaimStage := "Done"
+            }
         }
     }
 
@@ -932,6 +977,16 @@ ClaimAllInd()
             Sleep TTCC
             ClickPoint(200,560)
             ClaimStage := 1
+        }
+        else
+        {
+            failcounter := failcounter + 1
+
+            if (failcounter > 30)
+            {
+                ClaimStage := ClaimStage - 1
+                failcounter := 0
+            }
         }
     }
 
