@@ -201,6 +201,7 @@ StartButton:
     setTimer, CheckMouse, 10
 
     TotalSent := 0
+    TotalClaimed := 0
 
     While (Running)
     {
@@ -246,6 +247,13 @@ StartButton:
 
     AddLog("Stopped")
     AddLog("Total Hearts Sent: " TotalSent)
+    AddLog("Total Hearts Claimed: " TotalClaimed)
+
+    if (TotalSent > 0) {
+      AddLog("Ratio: " TotalClaimed/TotalSent)
+    }
+    
+    AddLog("") ; sometimes the last line isn't written to log.
 
     DumpLog()
 
@@ -290,6 +298,7 @@ RunStep()
     Global NextRoundMinutes
     Global HeartsSent
     Global TotalSent
+    Global ToalClaimed
     Global SkipBegin
     Global SkipEnd
     Global CCon_Timer
@@ -908,6 +917,7 @@ ClaimAllInd()
 {
     Global Verbose
     Global ClaimStage
+    Global TotalClaimed
     Global SendtoMail
     Global TTCS
     Global TTCC
@@ -991,6 +1001,7 @@ ClaimAllInd()
             ClickPoint(200,560)
             ClaimStage := 1
             heartsClaimed++
+            TotalClaimed++
         }
         else
         {
