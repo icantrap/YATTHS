@@ -231,13 +231,15 @@ StartButton:
                     NextRoundSeconds = 59
                     NextRoundMinutes--
 
-                    GuiControl,MainGui:, StatusBar, %NextRoundMinutes%:%NextRoundSeconds% until next round
+                    seconds := SubStr("0" NextRoundSeconds, -1)
+                    GuiControl,MainGui:, StatusBar, %NextRoundMinutes%:%seconds% until next round
                     Sleep, (1000)
                 }
             }
             else
             {
-                GuiControl,MainGui:, StatusBar, %NextRoundMinutes%:%NextRoundSeconds% until next round
+                seconds := SubStr("0" NextRoundSeconds, -1)
+                GuiControl,MainGui:, StatusBar, %NextRoundMinutes%:%seconds% until next round
                 Sleep, (1000)
             }
         }
@@ -252,7 +254,7 @@ StartButton:
     if (TotalSent > 0) {
       AddLog("Ratio: " TotalClaimed/TotalSent)
     }
-    
+
     AddLog("") ; sometimes the last line isn't written to log.
 
     DumpLog()
