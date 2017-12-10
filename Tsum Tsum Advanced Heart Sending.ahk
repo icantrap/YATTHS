@@ -250,10 +250,7 @@ StartButton:
     AddLog("Stopped")
     AddLog("Total Hearts Sent: " TotalSent)
     AddLog("Total Hearts Claimed: " TotalClaimed)
-
-    if (TotalSent > 0) {
-      AddLog("Ratio: " TotalClaimed/TotalSent)
-    }
+    AddLog("Ratio: " TotalClaimed/(TotalClaimed + TotalSent))
 
     AddLog("") ; sometimes the last line isn't written to log.
 
