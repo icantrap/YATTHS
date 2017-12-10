@@ -1,6 +1,6 @@
 ﻿;
-;   TTAHS - Tsum Tsum Advanced Heart Sending
-;       Version b3.93
+;   YATTHS - Yet Another TsumTsum Heart Sender
+;       Version 0.9
 ;
 ;
 ;
@@ -17,19 +17,19 @@ DetectHiddenWindows, On
 
 Main.ShowGUI()
 
-Gui About: New,, About
-
-Gui About: Add, Text, vTool_Version x9 y157 w461 h25 +0x200 Center
-Gui About: Add, Button, gAboutOK x199 y182 w80 h23, &OK
-Gui About: Add, Text, x13 y132 w458 h23 +0x200, nething4tc for the inspiration and foundation to make this tool
-Gui About: Font, s10
-Gui About: Add, Text, x12 y117 w120 h23 +0x200, Credit:
-Gui About: Font
-Gui About: Font, s14
-Gui About: Add, Text, x2 y1 w476 h32 +0x200 Center, TsumTsum Advanced Heart Sending
-Gui About: Font
-Gui About: Add, Text, x1 y27 w476 h18 +0x200 Center, by RinArenna
-Gui About: Add, Text, x8 y57 w465 h43, I am excited to be part of the TsumTsum community and provide this tool, which will always be a free tool to use and download. I want to thank all members of the Reddit community for their support and help in finding and solving issues in the tool. Without your help, this tool wouldn't work!
+; Gui About: New,, About
+;
+; Gui About: Add, Text, vTool_Version x9 y157 w461 h25 +0x200 Center
+; Gui About: Add, Button, gAboutOK x199 y182 w80 h23, &OK
+; Gui About: Add, Text, x13 y132 w458 h23 +0x200, nething4tc for the inspiration and foundation to make this tool
+; Gui About: Font, s10
+; Gui About: Add, Text, x12 y117 w120 h23 +0x200, Credit:
+; Gui About: Font
+; Gui About: Font, s14
+; Gui About: Add, Text, x2 y1 w476 h32 +0x200 Center, TsumTsum Advanced Heart Sending
+; Gui About: Font
+; Gui About: Add, Text, x1 y27 w476 h18 +0x200 Center, by RinArenna
+; Gui About: Add, Text, x8 y57 w465 h43, I am excited to be part of the TsumTsum community and provide this tool, which will always be a free tool to use and download. I want to thank all members of the Reddit community for their support and help in finding and solving issues in the tool. Without your help, this tool wouldn't work!
 
 
 GoSub, Instantiate
@@ -73,7 +73,7 @@ ExitButton:
 
 Instantiate:
     RoundsText := 0
-    GuiControl,About:,Tool_Version, TTAHS b3.93
+    GuiControl,About:,Tool_Version, YATTHS 0.9
     SetWorkingDir %A_ScriptDir%
     n_Width := 0
     n_Height := 0
@@ -102,14 +102,14 @@ Instantiate:
     /*
     Gui, Settings:Default
 
-    IniRead ScrollSpeedValue, TTAHS.ini, Settings, ScrollSpeed, 60
-    IniRead ClaimIndValue, TTAHS.ini, Settings, ClaimIndividually, 0
-    IniRead RoundMinutesValue, TTAHS.ini, Settings, RoundTime, 5
-    IniRead GameVersionValue, TTAHS.ini, Settings, GameVersion, INTL
-    IniRead Ignore0Value, TTAHS.ini, Settings, Ignore0, 0
-    IniRead SkipBeginValue, TTAHS.ini, Settings, SkipBegin, 0
-    IniRead SkipEndValue, TTAHS.ini, Settings, SkipEnd, 0
-    IniRead SendtoMailValue, TTAHS.ini, Settings, SendtoMail, 0
+    IniRead ScrollSpeedValue, YATTHS.ini, Settings, ScrollSpeed, 60
+    IniRead ClaimIndValue, YATTHS.ini, Settings, ClaimIndividually, 0
+    IniRead RoundMinutesValue, YATTHS.ini, Settings, RoundTime, 5
+    IniRead GameVersionValue, YATTHS.ini, Settings, GameVersion, INTL
+    IniRead Ignore0Value, YATTHS.ini, Settings, Ignore0, 0
+    IniRead SkipBeginValue, YATTHS.ini, Settings, SkipBegin, 0
+    IniRead SkipEndValue, YATTHS.ini, Settings, SkipEnd, 0
+    IniRead SendtoMailValue, YATTHS.ini, Settings, SendtoMail, 0
 
     GuiControl,,ScrollSpeed, %ScrollSpeedValue%
     GuiControl,, ClaimInd, %ClaimIndValue%
@@ -544,7 +544,7 @@ DumpLog()
 
     FormatTime gTime, hh:mm:ss tt dd`, MMM`, yyyy
 
-    FileAppend Log made at %gTime%, TTAHS.log
+    FileAppend Log made at %gTime%, YATTHS.log
 
     LVCount := LV_GetCount()
     r := 1
@@ -552,12 +552,12 @@ DumpLog()
     while (r < LVCount)
     {
         LV_GetText(GText, r)
-        FileAppend `n%GText%, TTAHS.log
+        FileAppend `n%GText%, YATTHS.log
 
         r := r + 1
     }
 
-    FileAppend `n`n, TTAHS.log
+    FileAppend `n`n, YATTHS.log
 
     r := LVCount
     While (r > 0)
