@@ -9,7 +9,7 @@
 ;
 
 Sett := new kGUI
-Sett.Create("Settings", 369, 389, "TTAHS Settings")
+Sett.Create("Settings", 369, 389, "YATTHS Settings")
 
 Sett.Save := Func("saveSettingData")
 Sett.Load := Func("loadSettingData")
@@ -119,18 +119,18 @@ saveSettingData(this)
     myName := this.name
     Gui, %myName%:Submit
 
-    IniWrite %Verbose%, TTAHS.ini, Settings, Verbose
-    IniWrite %TTCS%, TTAHS.ini, Settings, TTCS
-    IniWrite %TTCC%, TTAHS.ini, Settings, TTCC
-    IniWrite %ScrollDelay%, TTAHS.ini, Settings, ScrollDelay
-    IniWrite %ScrollSpeed%, TTAHS.ini, Settings, ScrollSpeed
-    IniWrite %ClaimInd%, TTAHS.ini, Settings, ClaimIndividually
-    IniWrite %RoundMinutes%, TTAHS.ini, Settings, RoundTime
-    IniWrite %GameVersion%, TTAHS.ini, Settings, GameVersion
-    IniWrite %Ignore0%, TTAHS.ini, Settings, Ignore0
-    IniWrite %SkipBegin%, TTAHS.ini, Settings, SkipBegin
-    IniWrite %SkipEnd%, TTAHS.ini, Settings, SkipEnd
-    IniWrite %SendtoMail%, TTAHS.ini, Settings, SendtoMail
+    IniWrite %Verbose%, YATTHS.ini, Settings, Verbose
+    IniWrite %TTCS%, YATTHS.ini, Settings, TTCS
+    IniWrite %TTCC%, YATTHS.ini, Settings, TTCC
+    IniWrite %ScrollDelay%, YATTHS.ini, Settings, ScrollDelay
+    IniWrite %ScrollSpeed%, YATTHS.ini, Settings, ScrollSpeed
+    IniWrite %ClaimInd%, YATTHS.ini, Settings, ClaimIndividually
+    IniWrite %RoundMinutes%, YATTHS.ini, Settings, RoundTime
+    IniWrite %GameVersion%, YATTHS.ini, Settings, GameVersion
+    IniWrite %Ignore0%, YATTHS.ini, Settings, Ignore0
+    IniWrite %SkipBegin%, YATTHS.ini, Settings, SkipBegin
+    IniWrite %SkipEnd%, YATTHS.ini, Settings, SkipEnd
+    IniWrite %SendtoMail%, YATTHS.ini, Settings, SendtoMail
 }
 
 loadSettingData(this)
@@ -140,18 +140,18 @@ loadSettingData(this)
 
     myName := this.name
 
-    IniRead VerboseValue, TTAHS.ini, Settings, Verbose, 0
-    IniRead TTCSValue, TTAHS.ini, Settings, TTCS, 200
-    IniRead TTCCValue, TTAHS.ini, Settings, TTCC, 200
-    IniRead ScrollDelayValue, TTAHS.ini, Settings, ScrollDelay, 1000
-    IniRead ScrollSpeedValue, TTAHS.ini, Settings, ScrollSpeed, 60
-    IniRead ClaimIndValue, TTAHS.ini, Settings, ClaimIndividually, 0
-    IniRead RoundMinutesValue, TTAHS.ini, Settings, RoundTime, 5
-    IniRead GameVersionValue, TTAHS.ini, Settings, GameVersion, INTL
-    IniRead Ignore0Value, TTAHS.ini, Settings, Ignore0, 0
-    IniRead SkipBeginValue, TTAHS.ini, Settings, SkipBegin, 0
-    IniRead SkipEndValue, TTAHS.ini, Settings, SkipEnd, 0
-    IniRead SendtoMailValue, TTAHS.ini, Settings, SendtoMail, 0
+    IniRead VerboseValue, YATTHS.ini, Settings, Verbose, 0
+    IniRead TTCSValue, YATTHS.ini, Settings, TTCS, 200
+    IniRead TTCCValue, YATTHS.ini, Settings, TTCC, 200
+    IniRead ScrollDelayValue, YATTHS.ini, Settings, ScrollDelay, 1000
+    IniRead ScrollSpeedValue, YATTHS.ini, Settings, ScrollSpeed, 60
+    IniRead ClaimIndValue, YATTHS.ini, Settings, ClaimIndividually, 0
+    IniRead RoundMinutesValue, YATTHS.ini, Settings, RoundTime, 5
+    IniRead GameVersionValue, YATTHS.ini, Settings, GameVersion, INTL
+    IniRead Ignore0Value, YATTHS.ini, Settings, Ignore0, 0
+    IniRead SkipBeginValue, YATTHS.ini, Settings, SkipBegin, 0
+    IniRead SkipEndValue, YATTHS.ini, Settings, SkipEnd, 0
+    IniRead SendtoMailValue, YATTHS.ini, Settings, SendtoMail, 0
 
     GuiControl,%myName%:,Verbose, %VerboseValue%
     GuiControl,%myName%:,TTCS, %TTCSValue%
@@ -170,7 +170,7 @@ loadSettingData(this)
 }
 
 /*
-Gui Settings: New,, TTAHS Settings
+Gui Settings: New,, YATTHS Settings
 
 Gui Settings: Add, CheckBox, vClaimInd x180 y75 w121 h15, Claim individually
 Gui Settings: Add, Edit, vRoundMinutes x180 y40 w45 h21, 5
