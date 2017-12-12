@@ -1,6 +1,6 @@
 ﻿#NoEnv
 #SingleInstance Force
-#Include %A_ScriptDir%/kLib.ahk
+#Include %A_ScriptDir%/lib/kLib.ahk
 
 Main := new kGUI
 Main.Create("MainGUI", 395, 580, "YATTHS")

@@ -8,8 +8,8 @@
 
 #NoEnv
 #SingleInstance Force
-#Include %A_ScriptDir%/guiSettings.ahk
-#Include %A_ScriptDir%/guiMain.ahk
+#Include %A_ScriptDir%/lib/guiSettings.ahk
+#Include %A_ScriptDir%/lib/guiMain.ahk
 
 SetWorkingDir %A_ScriptDir%
 SendMode Input
