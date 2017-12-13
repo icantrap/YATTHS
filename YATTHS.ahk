@@ -38,8 +38,8 @@ Return
 MenuHandler:
 Return
 
-MainGuiEscape:
-MainGuiClose:
+MainGUIGuiEscape:
+MainGUIGuiClose:
     ExitApp
 
 ; Do not edit above this line
