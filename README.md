@@ -5,7 +5,7 @@ Automated method for claiming and sending [Tsum Tsum](http://lol.disney.com/game
 
 ### Features
 
-* Runs using [Nox App Player](https://www.bignox.com).
+* Runs using [Nox App Player version 5](https://www.bignox.com/blog/noxplayer-5-2-1-0-release-notes/).
 * Claim all from mailbox.
 * Claim individually from mailbox, allowing for responding to unknowns.
 * Send hearts to all on leaderboard, including or excluding zero-score players.
@@ -40,6 +40,8 @@ A round consists of:
 1. Sending hearts to the players in your leaderboard.
 1. Claiming the contents of the mailbox.
 
+When claiming the contents of the mailbox individually, The Tsum Tsum app will only load the 100 most recent messages. If that happens, __YATTHS__ will reload the mailbox repeatedly until fewer than 100 messages were claimed.
+
 The tool logs its actions, so you can see which steps have/are being performed.
 
 ### Wiki
@@ -54,6 +56,10 @@ The [wiki](https://github.com/icantrap/YATTHS/wiki) has more information.
 ### Acknowledgments
 
 This project is a fork of [Tsum Tsum Advanced Heart Sending](http://www.criticalgenesis.com/ttahs.html), authored by [/u/RinArenna](https://www.reddit.com/user/RinArenna). A big thanks to all of their work making the original scripts.
+
+## Disclaimer
+
+Software provided as-is. Use at your own risk. We take no responsibility for anything that happens on your environment.
 
 ## License
 

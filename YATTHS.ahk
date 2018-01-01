@@ -2,9 +2,6 @@
 ;   YATTHS - Yet Another TsumTsum Heart Sender
 ;       Version 0.9
 ;
-;
-;
-;
 
 #NoEnv
 #SingleInstance Force
@@ -386,10 +383,8 @@ RunStep()
 
             if (Round_Part == 2) and (Next_Step == true)
             {
-                ;AddLog("Opening Mailbox...")
                 Next_Step := False
 
-                ;Open Mailbox
                 Result := EnterMailbox()
 
                 if (Result)
@@ -416,7 +411,10 @@ RunStep()
                     Result := ClaimAll()
                 }
 
-                if (Result)
+                if (Result == 1) {
+                  Round_Part := 2
+                }
+                else if (Result)
                 {
                     AddLog("Mail claimed.")
                     AddLog("Resetting friend list...")
@@ -521,7 +519,10 @@ RunStep()
                     Result := ClaimAll()
                 }
 
-                if (Result)
+                if (Result == 1) {
+                  Round_Part := 7
+                }
+                else if (Result)
                 {
                     AddLog("Final claim process complete.")
                     AddLog("Finished Round.")
@@ -912,6 +913,11 @@ ClaimAll()
     }
 }
 
+; Acts as the step machine for the individual claim process.
+;
+; Returns 0, if not done
+;         1, if done, but reprocess
+;         2, if done
 ClaimAllInd()
 {
     Global Verbose
@@ -922,12 +928,15 @@ ClaimAllInd()
     Global TTCC
     Global failcounter
 
-    NextPart := True
-    static heartsClaimed = 0
+    NextPart := true
+    static heartsClaimed := 0
+    static reopenMailbox := false
 
+    ; ClaimStage 1. Scan for the Heart_Part.png and click the Check button. Set
+    ; us to "done" if there is none found.
     if (ClaimStage == 1) and (NextPart)
     {
-        NextPart := False
+        NextPart := false
 
         if CheckImage("Heart_Part.png", getX, getY)
         {
@@ -962,9 +971,10 @@ ClaimAllInd()
         }
     }
 
+    ; ClaimStage 2. Scan for the message in the dialog and click the OK button.
     if (ClaimStage == 2) and (NextPart)
     {
-        NextPart := False
+        NextPart := false
 
         if CheckImage("Rec_Individual.png")
         {
@@ -991,9 +1001,15 @@ ClaimAllInd()
         }
     }
 
+    ; ClaimStage 3. Wait for the Tsum Tsum logo in the status dialog and click
+    ; on the screen to dismiss it. If it never appears, try to scan for the
+    ; the message again.
+    ;
+    ; todo. Is the assumption that the claim was successful and the next claim
+    ; happened? Dodgy.
     if (NextPart) and (ClaimStage == 3)
     {
-        NextPart := False
+        NextPart := false
         if CheckImage("TsumTsum.png")
         {
             Sleep TTCC
@@ -1014,9 +1030,11 @@ ClaimAllInd()
         }
     }
 
+    ; If we're somehow not "done" and not "exit", look for No_Claim_All.png and
+    ; set us to "done".
     if (ClaimStage != "Exit") and (ClaimStage != "Done") and (NextPart)
     {
-        NextPart := False
+        NextPart := false
         if CheckImage("No_Claim_All.png")
         {
             AddLog("No mail left to claim")
@@ -1024,37 +1042,47 @@ ClaimAllInd()
         }
     }
 
+    ; We're done. Log your logs amd set your states.
     if (ClaimStage == "Done") and (NextPart)
     {
-        NextPart := False
+      NextPart := false
+
+      if CheckImage("Close_Mail.png") {
+        reopenMailbox := (heartsClaimed == 100)
+
+        AddLog("Exiting Mail")
+        AddLog(heartsClaimed " hearts claimed.")
+        heartsClaimed := 0  ; ready for next time ...
+
+        ClaimStage := "Exit"
+      }
+    }
+
+    ; Exit the mailbox. If we see the play button, it's okay. If we still see
+    ; the Close button, we're not.
+    ;
+    ; todo. How would we need to click the Close_Mail.png again?
+    if (NextPart) and (ClaimStage == "Exit") {
+      NextPart := false
+
+      if CheckImage("Play_Button.png") {
+        if (reopenMailbox) {
+          return 1
+        }
+        else {
+          return 2
+        }
+      }
+      else
+      {
         if CheckImage("Close_Mail.png")
         {
-            AddLog("Exiting Mail")
-            AddLog(heartsClaimed " hearts claimed.")
-            heartsClaimed = 0  ; ready for next time ...
-
-            ClaimStage := "Exit"
+          ClickPoint(200, 650)
         }
+      }
     }
 
-    if (ClaimStage == "Exit") and (NextPart)
-    {
-        NextPart := False
-        if CheckImage("Play_Button.png")
-        {
-            return true
-        }
-        else
-        {
-            if CheckImage("Close_Mail.png")
-            {
-                ClickPoint(200, 650)
-            }
-            return false
-        }
-    }
-
-    return false
+    return 0
 }
 
 EnterMailbox()
