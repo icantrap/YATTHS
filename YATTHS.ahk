@@ -304,15 +304,13 @@ RunStep()
 
     if (!Mouse_Moved) and (!Paused)
     {
-        ;GuiControl,, StatusBar, Running
-
-        ;GetConnection()
         Next_Step := true
         Result := false
 
+        ; Every 60 iterations, check for connection. Don't stop checking for
+        ; connection until we get one.
         if (CCon_Timer == 0)
         {
-            ;CCol_Timer := 60
             Result := CheckConnection()
 
             if (Result)
@@ -404,7 +402,7 @@ RunStep()
                 ;Claim Mail
                 if (ClaimInd == 1)
                 {
-                    Result := ClaimAllInd()
+                    Result := ClaimIndividually()
                 }
                 else
                 {
@@ -512,7 +510,7 @@ RunStep()
                 ;Claim Mail
                 if (ClaimInd = 1)
                 {
-                    Result := ClaimAllInd()
+                    Result := ClaimIndividually()
                 }
                 else
                 {
@@ -918,7 +916,7 @@ ClaimAll()
 ; Returns 0, if not done
 ;         1, if done, but reprocess
 ;         2, if done
-ClaimAllInd()
+ClaimIndividually()
 {
     Global Verbose
     Global ClaimStage
@@ -1002,11 +1000,7 @@ ClaimAllInd()
     }
 
     ; ClaimStage 3. Wait for the Tsum Tsum logo in the status dialog and click
-    ; on the screen to dismiss it. If it never appears, try to scan for the
-    ; the message again.
-    ;
-    ; todo. Is the assumption that the claim was successful and the next claim
-    ; happened? Dodgy.
+    ; on the screen to dismiss it.
     if (NextPart) and (ClaimStage == 3)
     {
         NextPart := false
@@ -1017,16 +1011,6 @@ ClaimAllInd()
             ClaimStage := 1
             heartsClaimed++
             TotalClaimed++
-        }
-        else
-        {
-            failcounter := failcounter + 1
-
-            if (failcounter > 30)
-            {
-                ClaimStage := ClaimStage - 1
-                failcounter := 0
-            }
         }
     }
 
@@ -1212,7 +1196,7 @@ CheckImage(file,byRef getX := -1 ,byRef getY := -1)
     global n_Height
     global win_Width
     global win_Height
-    ;AddLog("Searching for " file " within bounds of " n_Width "x" n_Height)
+
     WinActivate, Nox ahk_Class Qt5QWindowIcon
 
     if (Verbose)
@@ -1289,28 +1273,9 @@ CheckSection(byRef appSection)
 
 CheckConnection()
 {
-    ;AddLog("Maintaining connection...")
     result := True
 
-    if CheckImage("Error_1.png")
-    {
-        AddLog("Connection error, trying to resume...")
-        ClickPoint(280,440)
-        result := False
-    }
-    if CheckImage("Error_1Retrieve.png")
-    {
-        AddLog("Connection error, trying to resume...")
-        ClickPoint(280,440)
-        result := False
-    }
-    if CheckImage("Error_6.png")
-    {
-        AddLog("Connection error, trying to resume...")
-        ClickPoint(280,440)
-        result := False
-    }
-    if CheckImage("Error_Timeout.png")
+    if CheckImage("Error_Code_1.png")
     {
         AddLog("Connection error, trying to resume...")
         ClickPoint(280,440)
