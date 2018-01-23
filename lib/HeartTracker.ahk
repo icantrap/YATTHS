@@ -13,8 +13,7 @@ class HeartTracker {
     x := heartX - 57
     y := heartY - 45
 
-    FormatTime, timeString
-    filename := timeString ".png"
+    filename := "./.tracker/" A_Now ".png"
 
     this._captureMessage(filename, x, y, 234, 69)
   }

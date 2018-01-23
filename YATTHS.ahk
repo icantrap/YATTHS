@@ -936,6 +936,9 @@ ClaimIndividually()
     Global TTCC
     Global failcounter
 
+    global win_X
+    global win_Y
+
     NextPart := true
     static heartsClaimed := 0
     static reopenMailbox := false
