@@ -5,12 +5,19 @@
 
 #NoEnv
 #SingleInstance Force
+
 #Include %A_ScriptDir%/lib/guiSettings.ahk
 #Include %A_ScriptDir%/lib/guiMain.ahk
+
+#Include %A_ScriptDir%/lib/HeartTracker.ahk
 
 SetWorkingDir %A_ScriptDir%
 SendMode Input
 DetectHiddenWindows, On
+
+; === GLOBALS ===
+heartTracker := new HeartTracker
+; ===============
 
 Main.ShowGUI()
 
@@ -941,17 +948,25 @@ ClaimIndividually()
 
         if CheckImage("Heart_Part.png", getX, getY)
         {
-            offX := getX + 196
-            offY := getY - 13
-            if (Verbose)
-            {
-                AddLog("Found Heart Part at " getX "," getY)
-                AddLog("Getting mail at " offX "," offY)
-            }
-            Sleep TTCS
-            ClickPoint(offX,offY)
-            ClaimStage := 2
-            failcounter := 0
+          ; absolute position of where Heart_Part.png was found
+          heartX := win_X + getX
+          heartY := win_Y + getY
+
+          offX := getX + 196
+          offY := getY - 13
+
+          if (Verbose)
+          {
+            AddLog("Found Heart Part at " getX "," getY)
+            AddLog("Getting mail at " offX "," offY)
+          }
+
+          heartTracker.track(heartX, heartY)
+
+          Sleep TTCS
+          ClickPoint(offX, offY)
+          ClaimStage := 2
+          failcounter := 0
         }
         else
         {
