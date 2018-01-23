@@ -8,14 +8,14 @@ class HeartTracker {
   ; track a heart based on the absolute location of where the
   ; heart (Heart_Part.png) was found.
   track(heartX, heartY) {
-    ; figure out the bounding box for message capture. The offset is (-57, -45).
-    ; The deminsions are (234, 69)
-    x := heartX - 57
-    y := heartY - 45
+    ; figure out the bounding box for OCR. The offset is (18, -41). The
+    ; dimensions are (156, 60)
+    x := heartX + 18
+    y := heartY - 41
 
     filename := "./.tracker/" A_Now ".png"
 
-    this._captureMessage(filename, x, y, 234, 69)
+    this._captureMessage(filename, x, y, 156, 60)
   }
 
   _captureMessage(filename, x, y, w, h) {
