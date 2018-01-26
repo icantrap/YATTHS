@@ -970,16 +970,9 @@ ClaimIndividually()
         {
           failcounter := failcounter + 1
 
-          ; if we've claimed at least one heart, no need to wait for 30 more
-          ; failures
-          if (heartsClaimed > 0)
-          {
-            ClaimStage := "Done"
-          }
-
-          if (failcounter > 30) {
-            if (heartsClaimed == 0) {
-              AddLog("No received hearts detected!")
+            if (failcounter = 30) {
+                AddLog("No received hearts detected!")
+                ClaimStage := "Done"
             }
 
             ClaimStage := "Done"
