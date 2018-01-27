@@ -133,11 +133,12 @@ Instantiate:
 
 return
 
-AddLog(newString)
-{
-    Gui MainGUI:Default
-    NewEntry := LV_Add("", GetFTime() " || " newString)
-    LV_Modify(NewEntry, "Vis")
+AddLog(string) {
+  Gui MainGUI:Default
+
+  FormatTime, time, R D1
+  NewEntry := LV_Add("", time ". " string)
+  LV_Modify(NewEntry, "Vis")
 }
 
 CheckMouse:
@@ -246,8 +247,11 @@ StartButton:
 
     AddLog("Stopped")
     AddLog("Total Hearts Sent: " TotalSent)
-    AddLog("Total Hearts Claimed: " TotalClaimed)
-    AddLog("Ratio: " TotalClaimed/(TotalClaimed + TotalSent))
+
+    if (ClaimInd == 1) {
+      AddLog("Total Hearts Claimed: " TotalClaimed)
+      AddLog("Ratio: " TotalClaimed/(TotalClaimed + TotalSent))
+    }
 
     AddLog("") ; sometimes the last line isn't written to log.
 
@@ -575,12 +579,6 @@ DumpLog()
     }
 }
 
-GetFTime()
-{
-    FormatTime gTime, hh:mm:ss tt
-    return gTime
-}
-
 ScrollUp()
 {
     Global ScrollSpeed
@@ -797,6 +795,12 @@ ResetList()
     }
 }
 
+; Acts as the step machine for the claim all process
+;
+; Returns 0, if not done
+;         2, if done
+;
+; Return values coincide with those of ClaimIndividually
 ClaimAll()
 {
     Global ClaimStage
@@ -849,34 +853,24 @@ ClaimAll()
         }
     }
 
-    if (ClaimStage != 5) and (ClaimStage != 6)
-    {
+    if (ClaimStage == 4) and (NextPart) {
         NextPart := False
-        if CheckImage("No_Claim_All.png")
-        {
-            failcounter := failcounter + 1
-            if (failcounter = 30)
-            {
-                if not (ClaimStage == 4)
-                {
-                    AddLog("No mail to claim!")
-                }
-                else
-                {
-                    AddLog("Mail claimed!")
-                }
 
-                ClaimStage := 5
-                failcounter := 0
-            }
+        if CheckImage("No_Claim_All.png") {
+            AddLog("Mail claimed!")
+
+            ClaimStage := 5
+            failcounter := 0
         }
-        else
-        {
-            if (ClaimStage == 4)
-            {
-                AddLog("Mail claimed! Skill tickets remaining!")
-                ClaimStage := 5
-            }
+        else {
+          failcounter++
+
+          if (failcounter > 30) {
+            AddLog("No mail to claim!")
+
+            ClaimStage := 5
+            failcounter := 0
+          }
         }
     }
 
@@ -895,7 +889,7 @@ ClaimAll()
         NextPart := False
         if CheckImage("Play_Button.png")
         {
-            Return true
+            Return 2
         }
         else
         {
@@ -906,7 +900,7 @@ ClaimAll()
                     ClickPoint(200, 650)
                 }
             }
-            Return false
+            Return 0
         }
     }
 }
