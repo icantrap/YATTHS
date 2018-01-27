@@ -395,7 +395,7 @@ RunStep()
                     AddLog("Beginning claim process...")
                     Round_Part := 3
                     failcounter := 0
-                    ClaimStage := 1
+                    ClaimStage := 0
                 }
             }
 
@@ -503,7 +503,7 @@ RunStep()
                     AddLog("Mailbox opened.")
                     AddLog("Beginning final claim process...")
                     Round_Part := 8
-                    ClaimStage := 1
+                    ClaimStage := 0
                 }
             }
 
@@ -810,6 +810,11 @@ ClaimAll()
 
     NextPart := true
 
+    ; Claim Stage 0. Set it up.
+    if (ClaimStage == 0) {
+      ClaimStage := 1
+    }
+
     if (ClaimStage == 1) and (NextPart) {
         NextPart := False
 
@@ -930,8 +935,16 @@ ClaimIndividually()
     Global failcounter
 
     NextPart := true
-    static heartsClaimed := 0
-    static reopenMailbox := false
+    static heartsClaimed
+    static reopenMailbox
+
+    ; ClaimStage 0. Set everything up.
+    if (ClaimStage == 0) {
+      heartsClaimed := 0
+      reopenMailbox := false
+
+      ClaimStage := 1
+    }
 
     ; ClaimStage 1. Scan for the Heart_Part.png and click the Check button. Set
     ; us to "done" if there is none found.
@@ -955,20 +968,22 @@ ClaimIndividually()
         }
         else
         {
-            failcounter := failcounter + 1
+          failcounter := failcounter + 1
 
-            ; if we've claimed at least one heart, no need to wait for 30 more
-            ; failures
-            if (heartsClaimed > 0)
-            {
-              ClaimStage := "Done"
+          ; if we've claimed at least one heart, no need to wait for 30 more
+          ; failures
+          if (heartsClaimed > 0)
+          {
+            ClaimStage := "Done"
+          }
+
+          if (failcounter > 30) {
+            if (heartsClaimed == 0) {
+              AddLog("No received hearts detected!")
             }
 
-            if (failcounter = 30)
-            {
-                AddLog("No received hearts detected!")
-                ClaimStage := "Done"
-            }
+            ClaimStage := "Done"
+          }
         }
     }
 
@@ -1039,7 +1054,6 @@ ClaimIndividually()
 
         AddLog("Exiting Mail")
         AddLog(heartsClaimed " hearts claimed.")
-        heartsClaimed := 0  ; ready for next time ...
 
         ClaimStage := "Exit"
       }
