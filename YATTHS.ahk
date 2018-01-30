@@ -810,14 +810,23 @@ ClaimAll()
 
     NextPart := true
 
-    if (ClaimStage == 1) and (NextPart)
-    {
+    if (ClaimStage == 1) and (NextPart) {
         NextPart := False
-        if CheckImage("Claim_All.png")
-        {
+
+        if CheckImage("Claim_All.png") {
             ClickPoint(280,565)
             ClaimStage := 2
             failcounter := 0
+        }
+        else {
+          failcounter++
+
+          if (failcounter > 30) {
+            AddLog("No mail to claim!")
+
+            ClaimStage := 5
+            failcounter := 0
+          }
         }
     }
 
