@@ -30,22 +30,31 @@ vbField.ControlFloat := 5
 vbField.AddControl("CheckBox", "vbBox", "vVerbose", "Verbose Logging")
 
 
+; Heart Claiming Settings
 Bar1 := new SettingField
 Bar1.Init(Sett)
 Bar1.AddField("Bar1", "", "")
 
-hcField := new SettingField
-hcField.Init(Sett)
-hcField.AddField("hcText", "", "Heart Claiming")
-hcField.AddControl("CheckBox", "hcCI", "vClaimInd", "Claim individually")
+field := new SettingField
+field.Init(Sett)
+field.AddField("hcText", "", "Heart Claiming")
+field.AddControl("CheckBox", "hcCI", "vClaimInd", "Claim individually")
 
-hcField2 := new SettingField
-hcField2.Init(Sett)
-hcField2.AddControl("CheckBox", "hcBC", "vSkipBegin", "Skip beginning claim")
+field := new SettingField
+field.Init(Sett)
+field.FieldShift := 110
+field.ControlShift := 100
+field.AddField("reclaimThresholdLabel", "0x200", "Reclaim Threshold")
+field.AddControl("Edit", "reclaimThresholdEdit", "w70 vReclaimThreshold", "90")
+SetHoverText(reclaimThresholdEdit, "Reopen mailbox and reclaim if more than this many claimed individually.")
 
-hcField3 := new SettingField
-hcField3.Init(Sett)
-hcField3.AddControl("CheckBox", "hcFC", "vSkipEnd", "Skip final claim")
+field := new SettingField
+field.Init(Sett)
+field.AddControl("CheckBox", "hcBC", "vSkipBegin", "Skip beginning claim")
+
+field := new SettingField
+field.Init(Sett)
+field.AddControl("CheckBox", "hcFC", "vSkipEnd", "Skip final claim")
 
 Bar2 := new SettingField
 Bar2.Init(Sett)
@@ -125,6 +134,7 @@ saveSettingData(this)
     IniWrite %ScrollDelay%, YATTHS.ini, Settings, ScrollDelay
     IniWrite %ScrollSpeed%, YATTHS.ini, Settings, ScrollSpeed
     IniWrite %ClaimInd%, YATTHS.ini, Settings, ClaimIndividually
+    IniWrite %ReclaimThreshold%, YATTHS.ini, Settings, ReclaimThreshold
     IniWrite %RoundMinutes%, YATTHS.ini, Settings, RoundTime
     IniWrite %GameVersion%, YATTHS.ini, Settings, GameVersion
     IniWrite %Ignore0%, YATTHS.ini, Settings, Ignore0
@@ -146,6 +156,7 @@ loadSettingData(this)
     IniRead ScrollDelayValue, YATTHS.ini, Settings, ScrollDelay, 1000
     IniRead ScrollSpeedValue, YATTHS.ini, Settings, ScrollSpeed, 60
     IniRead ClaimIndValue, YATTHS.ini, Settings, ClaimIndividually, 0
+    IniRead ReclaimThresholdValue, YATTHS.ini, Settings, ReclaimThreshold, 90
     IniRead RoundMinutesValue, YATTHS.ini, Settings, RoundTime, 5
     IniRead GameVersionValue, YATTHS.ini, Settings, GameVersion, INTL
     IniRead Ignore0Value, YATTHS.ini, Settings, Ignore0, 0
@@ -159,6 +170,7 @@ loadSettingData(this)
     GuiControl,%myName%:,ScrollDelay, %ScrollDelayValue%
     GuiControl,%myName%:,ScrollSpeed, %ScrollSpeedValue%
     GuiControl,%myName%:, ClaimInd, %ClaimIndValue%
+    GuiControl,%myName%:, ReclaimThreshold, %ReclaimThresholdValue%
     GuiControl,%myName%:, RoundMinutes, %RoundMinutesValue%
     GuiControl,%myName%:ChooseString, GameVersion, %GameVersionValue%
     GuiControl,%myName%:, Ignore0, %Ignore0Value%
@@ -168,25 +180,3 @@ loadSettingData(this)
 
     Gui, %myName%:Submit
 }
-
-/*
-Gui Settings: New,, YATTHS Settings
-
-Gui Settings: Add, CheckBox, vClaimInd x180 y75 w121 h15, Claim individually
-Gui Settings: Add, Edit, vRoundMinutes x180 y40 w45 h21, 5
-Gui Settings: Add, Button, gSettOK x150 y172 w80 h23, &OK
-Gui Settings: Add, Text, x10 y40 w120 h21 +0x200, Minutes between rounds
-Gui Settings: Add, ComboBox, vGameVersion x180 y10 w67, INTL||JP
-Gui Settings: Add, Text, x10 y10 w70 h21 Left +0x200, Game Version
-Gui Settings: Add, CheckBox, vIgnore0 x180 y135 w127 h15, Ignore 0 Score Players
-Gui Settings: Add, CheckBox, vSkipBegin x180 y90 w122 h15, Skip beginning claim
-Gui Settings: Add, CheckBox, vSkipEnd x180 y105 w120 h15, Skip final claim
-Gui Settings: Add, Text, x10 y75 w120 h23, Heart Claiming
-Gui Settings: Add, Text, x10 y135 w120 h23, Heart Sending
-
-Gui Settings: Add, CheckBox, vSendtoMail hwndMailHover x180 y150 w188 h15, Send hearts to requests in mailbox
-SetHoverText(MailHover, "Only works when claiming individually")
-
-Gui Settings: Add, Text, x9 y128 w352 h2 0x10
-Gui Settings: Add, Text, x9 y68 w350 h2 0x10
-*/

@@ -1,6 +1,6 @@
 ﻿;
 ;   YATTHS - Yet Another TsumTsum Heart Sender
-;       Version 0.9
+;       Version 0.9.5
 ;
 
 #NoEnv
@@ -70,7 +70,7 @@ ExitButton:
 
 Instantiate:
     RoundsText := 0
-    GuiControl,About:,Tool_Version, YATTHS 0.9
+    GuiControl,About:,Tool_Version, YATTHS 0.9.5
     SetWorkingDir %A_ScriptDir%
     n_Width := 0
     n_Height := 0
@@ -928,6 +928,7 @@ ClaimIndividually()
     Global TTCS
     Global TTCC
     Global failcounter
+    global ReclaimThreshold
 
     NextPart := true
     static heartsClaimed := 0
@@ -1035,7 +1036,7 @@ ClaimIndividually()
       NextPart := false
 
       if CheckImage("Close_Mail.png") {
-        reopenMailbox := (heartsClaimed == 100)
+        reopenMailbox := (heartsClaimed > ReclaimThreshold)
 
         AddLog("Exiting Mail")
         AddLog(heartsClaimed " hearts claimed.")
