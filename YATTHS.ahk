@@ -136,7 +136,7 @@ return
 AddLog(string) {
   Gui MainGUI:Default
 
-  FormatTime, time, R D1
+  FormatTime, time, , yyyy/MM/dd HH:mm:ss
   NewEntry := LV_Add("", time ". " string)
   LV_Modify(NewEntry, "Vis")
 }
@@ -1192,36 +1192,44 @@ DragFrom(x, y, dirX, dirY, literal)
     sleep 1000
 }
 
-CheckImage(file,byRef getX := -1 ,byRef getY := -1)
-{
-    global GameVersion
-    global Verbose
-    global n_Width
-    global n_Height
-    global win_Width
-    global win_Height
+CheckImage(filename, byRef getX := -1, byRef getY := -1) {
+  global GameVersion
+  global Verbose
+  global win_Width
+  global win_Height
+
+  static imageHandles := {}
+
+    filePath := "images/" GameVersion "/" filename
+
+    if imageHandles[filePath] {
+      if (Verbose) {
+        AddLog("Using " filePath " from handle.")
+       }
+    }
+    else {
+      if (Verbose) {
+        AddLog("Loading " filePath " into memory.")
+       }
+
+      imageHandles[filePath] := LoadPicture(filePath)
+    }
+
+    handle := imageHandles[filePath]
 
     WinActivate, Nox ahk_Class Qt5QWindowIcon
 
-    if (Verbose)
-    {
-        AddLog("Checking for: images\" GameVersion "\" file)
+    if (Verbose) {
+      AddLog("Checking for: images\" GameVersion "\" filename)
     }
 
-    ImageSearch resultX, resultY, 0, 0, win_Width, win_Height, *50 images\%GameVersion%\%file%
+    ImageSearch resultX, resultY, 0, 0, win_Width, win_Height, *50 HBITMAP:*%handle%
 
     getX := resultX
     getY := resultY
 
-    if (ErrorLevel == 0)
-    {
-        return True
-    }
-    else
-    {
-        return False
-    }
-}
+    return (ErrorLevel == 0)
+  }
 
 GetHeart(byRef getX, byRef getY)
 {
