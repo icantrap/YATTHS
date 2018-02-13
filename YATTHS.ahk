@@ -94,43 +94,6 @@ Instantiate:
     ResetL = 0
     Rounds = 0
     GuiControl,, RoundsText, %Rounds% rounds
-
-
-    /*
-    Gui, Settings:Default
-
-    IniRead ScrollSpeedValue, YATTHS.ini, Settings, ScrollSpeed, 60
-    IniRead ClaimIndValue, YATTHS.ini, Settings, ClaimIndividually, 0
-    IniRead RoundMinutesValue, YATTHS.ini, Settings, RoundTime, 5
-    IniRead GameVersionValue, YATTHS.ini, Settings, GameVersion, INTL
-    IniRead Ignore0Value, YATTHS.ini, Settings, Ignore0, 0
-    IniRead SkipBeginValue, YATTHS.ini, Settings, SkipBegin, 0
-    IniRead SkipEndValue, YATTHS.ini, Settings, SkipEnd, 0
-    IniRead SendtoMailValue, YATTHS.ini, Settings, SendtoMail, 0
-
-    GuiControl,,ScrollSpeed, %ScrollSpeedValue%
-    GuiControl,, ClaimInd, %ClaimIndValue%
-    GuiControl,, RoundMinutes, %RoundMinutesValue%
-    GuiControl, ChooseString, GameVersion, %GameVersionValue%
-    GuiControl,, Ignore0, %Ignore0Value%
-    GuiControl,, SkipBegin, %SkipBeginValue%
-    GuiControl,, SkipEnd, %SkipEndValue%
-    GuiControl,, SendtoMail, %SendtoMailValue%
-
-    Gui, Submit
-    if (Verbose)
-    {
-        AddLog("ClaimInd: " ClaimInd)
-        AddLog("RoundMinutes: " RoundMinutes)
-        AddLog("GameVersion: " GameVersion)
-        AddLog("Ignore0: " Ignore0)
-        AddLog("SkipBegin: " SkipBegin)
-        AddLog("SkipEnd: " SkipEnd)
-    }
-
-    Gui, Main:Default
-    */
-
 return
 
 AddLog(string) {
@@ -395,7 +358,7 @@ RunStep()
                     AddLog("Beginning claim process...")
                     Round_Part := 3
                     failcounter := 0
-                    ClaimStage := 1
+                    ClaimStage := 0
                 }
             }
 
@@ -503,7 +466,7 @@ RunStep()
                     AddLog("Mailbox opened.")
                     AddLog("Beginning final claim process...")
                     Round_Part := 8
-                    ClaimStage := 1
+                    ClaimStage := 0
                 }
             }
 
@@ -810,6 +773,10 @@ ClaimAll()
 
     NextPart := true
 
+    if (ClaimStage == 0) {
+      ClaimStage := 1
+    }
+
     if (ClaimStage == 1) and (NextPart) {
         NextPart := False
 
@@ -934,6 +901,14 @@ ClaimIndividually()
     static heartsClaimed := 0
     static reopenMailbox := false
 
+    ; Claim Stage 0. Initialize the process, then move to stage 1.
+    if (ClaimStage == 0) {
+      heartsClaimed := 0
+      reopenMailbox := 0
+
+      ClaimStage := 1
+    }
+
     ; ClaimStage 1. Scan for the Heart_Part.png and click the Check button. Set
     ; us to "done" if there is none found.
     if (ClaimStage == 1) and (NextPart)
@@ -1018,18 +993,6 @@ ClaimIndividually()
         }
     }
 
-    ; If we're somehow not "done" and not "exit", look for No_Claim_All.png and
-    ; set us to "done".
-    if (ClaimStage != "Exit") and (ClaimStage != "Done") and (NextPart)
-    {
-        NextPart := false
-        if CheckImage("No_Claim_All.png")
-        {
-            AddLog("No mail left to claim")
-            ClaimStage := "Done"
-        }
-    }
-
     ; We're done. Log your logs amd set your states.
     if (ClaimStage == "Done") and (NextPart)
     {
@@ -1040,7 +1003,6 @@ ClaimIndividually()
 
         AddLog("Exiting Mail")
         AddLog(heartsClaimed " hearts claimed.")
-        heartsClaimed := 0  ; ready for next time ...
 
         ClaimStage := "Exit"
       }
