@@ -897,9 +897,10 @@ ClaimIndividually()
     Global failcounter
     global ReclaimThreshold
 
-    NextPart := true
     static heartsClaimed := 0
     static reopenMailbox := false
+
+    NextPart := true
 
     ; Claim Stage 0. Initialize the process, then move to stage 1.
     if (ClaimStage == 0) {
@@ -915,8 +916,7 @@ ClaimIndividually()
     {
         NextPart := false
 
-        if CheckImage("Heart_Part.png", getX, getY)
-        {
+        if CheckImage("Heart_Part.png", getX, getY) {
             offX := getX + 196
             offY := getY - 13
             if (Verbose)
@@ -929,8 +929,19 @@ ClaimIndividually()
             ClaimStage := 2
             failcounter := 0
         }
-        else
-        {
+        else if CheckImage("Check_Part.png", x, y) {
+          if (Verbose) {
+            AddLog("Found Check_Part at " x "," y ".")
+            AddLog("Getting mail at " x "," y ".")
+          }
+
+          Sleep, TTCS
+          ClickPoint(x,y)
+
+          ClaimStage := 2
+          failcounter := 0
+        }
+        else {
             failcounter := failcounter + 1
 
             ; if we've claimed at least one heart, no need to wait for 30 more
