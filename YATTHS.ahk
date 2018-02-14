@@ -540,20 +540,23 @@ DumpLog()
     }
 }
 
-ScrollUp()
-{
+ScrollUp() {
     Global ScrollSpeed
 
-    if not CheckImage("Rank_1.png")
-    {
+    static count := 0
+
+    if not CheckImage("Rank_1.png") {
         scrollY := 270 + ScrollSpeed
+        dwell := Mod(count, 4) == 0 ? 1000 : 100
+
         WinActivate, Nox ahk_Class QtQ5WindowIcon
-        DragFrom(217,270,217,scrollY,true)
-        return False
+        DragFrom(217, 270, 217, scrollY, dwell)
+        count++
+
+        return false
     }
-    else
-    {
-        return True
+    else {
+        return true
     }
 }
 
@@ -618,7 +621,7 @@ SendHearts()
                 }
                 else
                 {
-                    DragFrom(217,285,217,270,true)
+                    DragFrom(217, 285, 217, 270)
                     return false
                     sleep ScrollDelay ;Pending variable sleep implementation
                 }
@@ -1179,24 +1182,14 @@ ClickPoint(x, y)
     ;ControlClick, x205 y565, Nox ahk_class Qt5QWindowIcon
 }
 
-DragFrom(x, y, dirX, dirY, literal) {
+DragFrom(x, y, dx, dy, dwell := 200) {
     WinActivate, Nox ahk_Class Qt5QWindowIcon
-    mouseGetPos, origX, origY
 
-    if (literal) {
-        x2 := dirX
-        y2 := dirY
-    }
-    else {
-        x2 := x + dirX
-        y2 := y + dirY
-    }
+    MouseGetPos, origX, origY
+    MouseClickDrag, L, %x%, %y%, %dx%, %dy%, 100
+    MouseMove, %origX%, %origY%, 0
 
-    MouseClickDrag, L, %x%, %y%, %x2%, %y2%, 100
-
-    mouseMove, %origX%, %origY%, 0
-
-    sleep 500
+    Sleep, dwell
 }
 
 CheckImage(filename, byRef getX := -1, byRef getY := -1) {
