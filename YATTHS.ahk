@@ -1179,45 +1179,24 @@ ClickPoint(x, y)
     ;ControlClick, x205 y565, Nox ahk_class Qt5QWindowIcon
 }
 
-DragFrom(x, y, dirX, dirY, literal)
-{
+DragFrom(x, y, dirX, dirY, literal) {
     WinActivate, Nox ahk_Class Qt5QWindowIcon
     mouseGetPos, origX, origY
 
-    if (literal)
-    {
+    if (literal) {
         x2 := dirX
         y2 := dirY
     }
-    else
-    {
+    else {
         x2 := x + dirX
         y2 := y + dirY
     }
 
-    cX := "x" x
-    cY := "y" y
-
-    cX2 := "x" x2
-    cY2 := "y" y2
-
-    ;MouseMove, %x%, %y%
-
-    ;MouseMove, %x2%, %y2%
-
     MouseClickDrag, L, %x%, %y%, %x2%, %y2%, 100
-
-    ;ControlClick, %cX% %cY%, Nox ahk_Class Qt5QWindowIcon,,,, D ,,, NA
-
-    ;MouseMove, %x2%, %y2%
-    ;ControlClick, %cX2% %cY2%, Nox ahk_Class Qt5QWindowIcon,,,, U ,,, NA
-
-    ;ControlClick, x217 y270 , Nox ahk_class Qt5QWindowIcon,,,, D ,,, NA
-    ;ControlClick, x217 y500 , Nox ahk_class Qt5QWindowIcon,,,, U ,,, NA
 
     mouseMove, %origX%, %origY%, 0
 
-    sleep 1000
+    sleep 500
 }
 
 CheckImage(filename, byRef getX := -1, byRef getY := -1) {
