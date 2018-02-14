@@ -166,7 +166,6 @@ StartButton:
 
     While (Running)
     {
-        ;Prepare your anus!
         if not (Timing)
         {
             Timing := RunStep()
@@ -357,7 +356,6 @@ RunStep()
                     AddLog("Mailbox opened.")
                     AddLog("Beginning claim process...")
                     Round_Part := 3
-                    failcounter := 0
                     ClaimStage := 0
                 }
             }
@@ -774,6 +772,7 @@ ClaimAll()
     NextPart := true
 
     if (ClaimStage == 0) {
+      failcounter := 0
       ClaimStage := 1
     }
 
@@ -904,14 +903,62 @@ ClaimIndividually()
 
     ; Claim Stage 0. Initialize the process, then move to stage 1.
     if (ClaimStage == 0) {
+      failcounter := 0
       heartsClaimed := 0
       reopenMailbox := 0
 
       ClaimStage := 1
     }
 
-    ; ClaimStage 1. Scan for the Heart_Part.png and click the Check button. Set
-    ; us to "done" if there is none found.
+    ; Recovery. If we're stuck, then try to figure out where we're stuck. If we
+    ; can't figure it out, abort the process. We tolerate a slightly higher
+    ; failure count to avoid conflict with Stage 1 failure processing.
+    if (failcounter > 32) {
+      AddLog("Attempting failure recovery...")
+
+      if CheckImage("Rec_Individual.png") || CheckImage("Give_Heart_Mail.png") {
+        if (Verbose) {
+          AddLog("Routing to ClaimStage(2).")
+        }
+
+        ClaimStage := 2
+      }
+      else if CheckImage("TsumTsum.png") {
+        if (Verbose) {
+          AddLog("Routing to ClaimStage(3).")
+        }
+
+        ClaimStage := 3
+      }
+      else if CheckImage("Close_Mail.png") {
+        if (Verbose) {
+          AddLog("Routing to ClaimStage(Done).")
+        }
+
+        ClaimStage := "Done"
+      }
+      else if CheckImage("Play_Button.png") || CheckImage("Close_Mail.png") {
+        if (Verbose) {
+          AddLog("Routing to ClaimStage(Exit).")
+        }
+
+        ClaimStage := "Exit"
+      }
+      else if CheckImage("Heart_Part.png") || CheckImage("Check_Part.png", x, y) {
+        if (Verbose) {
+          AddLog("Routing to ClaimStage(1).")
+        }
+
+        ClaimStage := 1
+      }
+      else {
+        AddLog("Could not recover. Aborting individual claiming.")
+        return 2
+      }
+    }
+
+    ; ClaimStage 1. Scan for a message and click the Check button. Set us to
+    ; "Done" if we've been down this road too many times.
     if (ClaimStage == 1) and (NextPart)
     {
         NextPart := false
@@ -926,6 +973,7 @@ ClaimIndividually()
             }
             Sleep TTCS
             ClickPoint(offX,offY)
+
             ClaimStage := 2
             failcounter := 0
         }
@@ -946,13 +994,11 @@ ClaimIndividually()
 
             ; if we've claimed at least one heart, no need to wait for 30 more
             ; failures
-            if (heartsClaimed > 0)
-            {
+            if (heartsClaimed > 0) {
               ClaimStage := "Done"
             }
 
-            if (failcounter = 30)
-            {
+            if (failcounter > 30) {
                 AddLog("No received hearts detected!")
                 ClaimStage := "Done"
             }
@@ -964,49 +1010,53 @@ ClaimIndividually()
     {
         NextPart := false
 
-        if CheckImage("Rec_Individual.png")
-        {
-            Sleep TTCS
-            ClickPoint(288,450)
-            ClaimStage := 3
+        if CheckImage("Rec_Individual.png") {
+          Sleep TTCS
+          ClickPoint(288,450)
+
+          ClaimStage := 3
+          failcounter := 0
         }
-        else
+        else if CheckImage("Give_Heart_Mail.png")
         {
-            if CheckImage("Give_Heart_Mail.png")
-            {
-                if (SendtoMail)
-                {
-                    Sleep TTCS
-                    ClickPoint(290,450)
-                }
-                else
-                {
-                    Sleep TTCS
-                    ClickPoint(120,450)
-                }
-                ClaimStage := 3
-            }
+          if (SendtoMail) {
+            Sleep TTCS
+            ClickPoint(290,450)
+          }
+          else {
+            Sleep TTCS
+            ClickPoint(120,450)
+          }
+
+          ClaimStage := 3
+          failcounter := 0
+        }
+        else {
+          failcounter++
         }
     }
 
     ; ClaimStage 3. Wait for the Tsum Tsum logo in the status dialog and click
     ; on the screen to dismiss it.
-    if (NextPart) and (ClaimStage == 3)
-    {
+    if (NextPart) and (ClaimStage == 3) {
         NextPart := false
-        if CheckImage("TsumTsum.png")
-        {
+
+        if CheckImage("TsumTsum.png") {
             Sleep TTCC
             ClickPoint(200,560)
-            ClaimStage := 1
             heartsClaimed++
             TotalClaimed++
+
+            ClaimStage := 1
+            failcounter := 0
+        }
+        else {
+          failcounter++
         }
     }
 
     ; We're done. Log your logs amd set your states.
-    if (ClaimStage == "Done") and (NextPart)
-    {
+    if (ClaimStage == "Done") and (NextPart) {
       NextPart := false
 
       if CheckImage("Close_Mail.png") {
@@ -1016,6 +1066,10 @@ ClaimIndividually()
         AddLog(heartsClaimed " hearts claimed.")
 
         ClaimStage := "Exit"
+        failcounter := 0
+      }
+      else {
+        failcounter++
       }
     }
 
@@ -1027,6 +1081,8 @@ ClaimIndividually()
       NextPart := false
 
       if CheckImage("Play_Button.png") {
+        failcounter := 0
+
         if (reopenMailbox) {
           return 1
         }
@@ -1034,12 +1090,11 @@ ClaimIndividually()
           return 2
         }
       }
-      else
-      {
-        if CheckImage("Close_Mail.png")
-        {
-          ClickPoint(200, 650)
-        }
+      else if CheckImage("Close_Mail.png") {
+        ClickPoint(200, 650)
+      }
+      else {
+        failcounter++
       }
     }
 
