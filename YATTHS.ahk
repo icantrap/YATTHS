@@ -959,50 +959,50 @@ ClaimIndividually()
 
     ; ClaimStage 1. Scan for a message and click the Check button. Set us to
     ; "Done" if we've been down this road too many times.
-    if (ClaimStage == 1) and (NextPart)
-    {
-        NextPart := false
+    if (ClaimStage == 1) and (NextPart) {
+      NextPart := false
 
-        if CheckImage("Heart_Part.png", getX, getY) {
-            offX := getX + 196
-            offY := getY - 13
-            if (Verbose)
-            {
-                AddLog("Found Heart Part at " getX "," getY)
-                AddLog("Getting mail at " offX "," offY)
-            }
-            Sleep TTCS
-            ClickPoint(offX,offY)
-
-            ClaimStage := 2
-            failcounter := 0
+      if CheckImage("Heart_Part.png", getX, getY) {
+        offX := getX + 196
+        offY := getY - 13
+        if (Verbose) {
+          AddLog("Found Heart Part at " getX "," getY)
+          AddLog("Getting mail at " offX "," offY)
         }
-        else if CheckImage("Check_Part.png", x, y) {
-          if (Verbose) {
-            AddLog("Found Check_Part at " x "," y ".")
-            AddLog("Getting mail at " x "," y ".")
-          }
+        Sleep TTCS
+        ClickPoint(offX,offY)
 
-          Sleep, TTCS
-          ClickPoint(x,y)
-
-          ClaimStage := 2
-          failcounter := 0
+        ClaimStage := 2
+        failcounter := 0
+      }
+      else if CheckImage("Check_Part.png", x, y) {
+        if (Verbose) {
+          AddLog("Found Check_Part at " x "," y ".")
+          AddLog("Getting mail at " x "," y ".")
         }
-        else {
-            failcounter := failcounter + 1
 
-            ; if we've claimed at least one heart, no need to wait for 30 more
-            ; failures
-            if (heartsClaimed > 0) {
-              ClaimStage := "Done"
-            }
+        Sleep, TTCS
+        ClickPoint(x,y)
 
-            if (failcounter > 30) {
-                AddLog("No received hearts detected!")
-                ClaimStage := "Done"
-            }
+        AddLog("Claimed prize.")
+
+        ClaimStage := 2
+        failcounter := 0
+      }
+      else {
+        failcounter++
+
+        ; if we've claimed at least one heart, no need to wait for 30 more
+        ; failures
+        if (heartsClaimed > 0) {
+          ClaimStage := "Done"
         }
+
+        if (failcounter > 30) {
+          AddLog("No received hearts detected!")
+          ClaimStage := "Done"
+        }
+      }
     }
 
     ; ClaimStage 2. Scan for the message in the dialog and click the OK button.
