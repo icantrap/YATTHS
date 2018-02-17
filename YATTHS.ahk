@@ -984,8 +984,6 @@ ClaimIndividually()
         Sleep, TTCS
         ClickPoint(x,y)
 
-        AddLog("Claimed prize.")
-
         ClaimStage := 2
         failcounter := 0
       }
